@@ -5,6 +5,7 @@ import { bootstrapCameraKit } from '@snap/camera-kit';
     const liveRenderTarget = document.getElementById('canvas');
     const session = await cameraKit.createSession({ liveRenderTarget });
 
+    const manish = document.createElement('input');
     // Set video constraints to 1280x720 (16:9 aspect ratio)
     const videoConstraints = {
         width: { ideal: 1920 },
