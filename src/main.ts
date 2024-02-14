@@ -1,19 +1,24 @@
-import { bootstrapCameraKit } from '@snap/camera-kit';
+import { bootstrapCameraKit, CameraKit, Session } from '@snap/camera-kit';
 
 (async function () {
-    const cameraKit = await bootstrapCameraKit({ apiToken: 'eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.eyJhdWQiOiJjYW52YXMtY2FudmFzYXBpIiwiaXNzIjoiY2FudmFzLXMyc3Rva2VuIiwibmJmIjoxNzA1MTUxMzg0LCJzdWIiOiI3NDRiZTczYS1iODlmLTRkYzAtYjk1MC0yMDIyNGY2NjJjMGF-U1RBR0lOR35iZGM2ZTgyOS1iYTdhLTRmNDgtOGVlMC0wZWMyYjFlMjE1ZTYifQ.6HxXxLjUNOD9IV73x8tFcF11P4jDYGeD--7kW02iGho' });
-    const liveRenderTarget = document.getElementById('canvas');
-    const session = await cameraKit.createSession({ liveRenderTarget });
+    const cameraKit: CameraKit = await bootstrapCameraKit({ apiToken: 'eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.eyJhdWQiOiJjYW52YXMtY2FudmFzYXBpIiwiaXNzIjoiY2FudmFzLXMyc3Rva2VuIiwibmJmIjoxNzA1MTUxMzg0LCJzdWIiOiI3NDRiZTczYS1iODlmLTRkYzAtYjk1MC0yMDIyNGY2NjJjMGF-U1RBR0lOR35iZGM2ZTgyOS1iYTdhLTRmNDgtOGVlMC0wZWMyYjFlMjE1ZTYifQ.6HxXxLjUNOD9IV73x8tFcF11P4jDYGeD--7kW02iGho' });
+    const liveRenderTarget = document.getElementById('canvas') as HTMLCanvasElement | null;
+    if (!liveRenderTarget) {
+        console.error('Canvas element not found');
+        return;
+    }
 
-    const manish = document.createElement('input');
-    // Set video constraints to 1280x720 (16:9 aspect ratio)
+    const session: Session = await cameraKit.createSession({ liveRenderTarget });
+
+    // Removed unused variable 'manish'
+    // Set video constraints to 1920x1080 (16:9 aspect ratio)
     const videoConstraints = {
         width: { ideal: 1920 },
         height: { ideal: 1080 },
         aspectRatio: 16 / 9
     };
 
-    const mediaStream = await navigator.mediaDevices.getUserMedia({
+    const mediaStream: MediaStream = await navigator.mediaDevices.getUserMedia({
         video: videoConstraints
     });
 
@@ -26,15 +31,17 @@ import { bootstrapCameraKit } from '@snap/camera-kit';
     );
     await session.applyLens(lens);
 
-    let recorder;
-    let data = [];
+    let recorder: MediaRecorder | null = null;
+    let data: BlobPart[] = [];
 
     function startRecording() {
         const canvasStream = liveRenderTarget.captureStream(30); // 30 FPS
         recorder = new MediaRecorder(canvasStream);
 
-        recorder.ondataavailable = event => data.push(event.data);
-        recorder.onerror = (event) => {
+        recorder.ondataavailable = (event: BlobEvent) => {
+            data.push(event.data);
+        };
+        recorder.onerror = (event: MediaRecorderErrorEvent) => {
             console.error('Recorder Error:', event.error);
         };
         recorder.onstop = () => {
@@ -52,6 +59,8 @@ import { bootstrapCameraKit } from '@snap/camera-kit';
 
             document.body.removeChild(downloadLink);
             URL.revokeObjectURL(url);
+            // Reset data for the next recording session
+            data = [];
         };
 
         recorder.start();
