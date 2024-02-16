@@ -25,8 +25,8 @@ import { bootstrapCameraKit } from '@snap/camera-kit';
     await session.applyLens(lens);
     
 
-    let recorder;
-    let data = [];
+    let recorder:MediaRecorder;
+    let data:Blob[] = [];
 
     function startRecording() {
         const canvasStream = liveRenderTarget.captureStream(30); // 30 FPS
@@ -35,7 +35,7 @@ import { bootstrapCameraKit } from '@snap/camera-kit';
         
         recorder.ondataavailable = event => data.push(event.data);
         recorder.onerror = (event) => {
-            console.error('Recorder Error:', event.error);
+            console.error('Recorder Error:', event);
         };
         recorder.onstop = () => {
             console.log('Recording stopped');
