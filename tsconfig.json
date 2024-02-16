@@ -6,29 +6,19 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
 
-    /* Adjusted module resolution for compatibility */
-    "moduleResolution": "node",
-    /* Enable JavaScript file emission */
-    "noEmit": false,
-    /* Output directory for compiled JavaScript */
-    "outDir": "./dist",
-
-    /* Enable source map generation for debugging */
-    "sourceMap": true,
-
-    /* Include JSON module resolution */
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "noEmit": true,
 
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-
-    /* Remove non-standard and unnecessary options */
-    // "allowImportingTsExtensions": true, Removed as it's non-standard
+    "noImplicitAny": false,
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src"]
 }
